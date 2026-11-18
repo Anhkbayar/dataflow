@@ -3,6 +3,22 @@
 - **Оюутны нэр:** Z.Ankhbayar
 - **Оюутны код:** B232270029
 
+## Орчин
+
+```
+$ java -version
+openjdk version "25.0.5.0.3" 2026-10-24
+OpenJDK Runtime Environment (build 25.0.5.0.3+1-1-26.04.1-Ubuntu)
+OpenJDK 64-Bit Server VM (build 25.0.5.0.3+1-1-26.04.1-Ubuntu, mixed mode, sharing)
+
+$ mvn -version
+Apache Maven 3.9.12
+Maven home: /usr/share/maven
+Java version: 25.0.5.0.3, vendor: Ubuntu, runtime: /usr/lib/jvm/java-25-openjdk-amd64
+Default locale: en_US, platform encoding: UTF-8
+OS name: "linux", version: "7.0.0-43-generic", arch: "amd64", family: "unix"
+```
+
 
 ## Хэсэг A: gcd — DU хосын хүснэгт
 
@@ -167,14 +183,15 @@ Def-үүд: attendance@31, threshold@31, a@38, present@35/40, streak@36/41/46, b
 | T5 | `t5_emptyArrayThresholdZero` | `{}`, 0 | 5 |
 | T6 | `t6_streak5BelowThreshold` | `{1,1,1,1,1}`, 6 | 3 |
 | T7 | `t7_singleBreakThenOne` | `{1,0,1}`, 1 | 5 |
+| T8 | `t8_streak4AfterBreakStaysBelow5` | `{1,0,1,1,1,1}`, 1 | 5 |
 
-**Шат 1 — ALL-DEFS: AD1 + AD2 (2 тест).** Commit: `bonus: all-defs tests`.
+**Шат 1 — ALL-DEFS: AD1 + AD2 (2 тест).**
 
 *Яагаад 2-оос цөөн болохгүй вэ:* `score`-ийн 3 def (49, 51, 54) бүр заавал use-д хүрэх ёстой. Нэг гүйцэтгэлд `score@49` ба `score@51` хоёрыг хоёуланг нь use-д хүргэх боломжгүй: 51 ажиллавал 50→51 дээр `score@49`-ийг дарж, 49-ийн def ямар ч use-д хүрэхээс өмнө алдагдана; 51 ажиллахгүй бол `score@51` огт үүсэхгүй. Тиймээс `score@49` (50-ийн F салаа: DU31/DU32) ба `score@51` (50-ийн T салаа: DU33/DU34) өөр өөр гүйцэтгэл шаарддаг → хамгийн багадаа **2 тест**. 2 тест хангалттай: AD1 (50 T, 53 T) нь `score@51 → 54`, `score@54 → 56` болон бусад бүх def-ийг, AD2 нь `score@49 → 56`-г хамарна.
 
 ALL-DEFS-ээр хамрагдсан хос: DU2, DU3, DU4, DU6, DU7, DU8, DU9, DU10, DU11, DU13, DU14, DU15, DU17, DU18, DU19, DU20, DU21, DU22, DU23, DU26, DU27, DU28, DU29, DU32, DU33, DU35 (26/33).
 
-**Шат 2 — ALL-DU-PAIRS: AD1, AD2 + T3…T7 (нийт 7 тест).** Тусдаа commit. Биелэх 33 хос бүгд хамрагдсан (дээрх хүснэгтийн «Тестийн ID» багана).
+**Шат 2 — ALL-DU-PAIRS: AD1, AD2 + T3…T7 (нийт 7 тест).** Биелэх 33 хос бүгд хамрагдсан (дээрх хүснэгтийн «Тестийн ID» багана).
 
 ### B5 — JaCoCo
 
@@ -189,7 +206,7 @@ ALL-DEFS-ээр хамрагдсан хос: DU2, DU3, DU4, DU6, DU7, DU8, DU9, 
 - **All-defs хангасан ч branch 100% биш байж болох уу? Тийм.** `jacoco-alldefs.csv`: Branch 14/16 (2 missed). AD1, AD2 нь бүх def-ийг use-д хүргэсэн ч 32-р мөрийн `attendance == null`-ийн T ба `threshold < 0`-ийн T салаа (IAE шидэх) хамрагдаагүй. All-defs нь branch-ийг заавал хамарна гэсэн баталгаа биш.
 - **Branch 100% болсон ч DU хос үлдэж болох уу? Тийм — лекцийн гол баталгаа.** AD1, AD2, T3, T4 (4 тест) нь `jacoco-branch100-partial.csv`-д BRANCH_MISSED = 0 (16/16) өгдөг. Гэвч DU хосоос **5 нь хамрагдаагүй**: DU12 (`present@35 → 50 T`), DU16 (`present@40 → 50 F`), DU30 (`best@43 → 53 F`), DU31 (`score@49 → 54`), DU34 (`score@51 → 56`). Жишээ нь DU31: `present < threshold`, гэхдээ `best >= 5` — T6 (`{1,1,1,1,1}`, 6) шиг оролт хэрэгтэй; branch тус бүр нь өөр өөр тестээр хамрагдсан ч салааны **хослол** (50 F → 53 T) хэзээ ч нэг гүйцэтгэлд тохиолдоогүй. DU хос нь салаануудын хоорондын өгөгдлийн урсгалыг шаарддаг тул branch хамралтаас хүчтэй.
 
-Нийт хамралт: 10 тест (GcdTest 3 + BonusTest 7), бүгд ногоон: `results/mvn-verify-final.txt`.
+Нийт хамралт: 11 тест (GcdTest 3 + BonusTest 8), бүгд ногоон: `results/mvn-verify-final.txt`.
 
 ---
 
@@ -225,3 +242,10 @@ ALL-DEFS-ээр хамрагдсан хос: DU2, DU3, DU4, DU6, DU7, DU8, DU9, 
 
 ### Эцсийн төлөв
 `git status`-д `DataFlowTargets.java` өөрчлөгдөөгүй. Эцсийн гаралт: `results/mvn-verify-final.txt`, `results/jacoco-final.csv` (BRANCH_MISSED = 0, 16/16; LINE_MISSED = 1 — 7-р мөрийн далд constructor). T8 нэмсний дараа тест 11 (BonusTest 8 + GcdTest 3), бүгд ногоон.
+
+---
+
+## Дүгнэлт
+
+Branch хамралт нь салаа бүрийг хоёр чиглэлд нь нэг удаа дайрсан эсэхийг л хэмждэг бол DU анализ нь def-ээс use хүртэлх өгөгдлийн урсгалыг шалгадаг тул илүү хүчтэй. Үүнийг `AD1, AD2, T3, T4` багц харуулсан: branch 16/16 хамрагдсан боловч 33 биелэх DU хосын 5 нь (DU12, DU16, DU30, DU31, DU34) хамрагдаагүй байсан. M1 (def устсан)-ийг DU хос дээр суурилсан тестүүд барьсан, харин M2 (буруу хувьсагч)-ийг бүх DU хос хамрагдсан ч барьж чадаагүй: DU хамралт use дээрх утгыг биш, зөвхөн def-use холбоог шалгадаг тул `present` ба `streak` ижил утгатай байхад ялгарсангүй. M3 (үхсэн def)-ийг ямар ч тест барьдаггүй, static analysis л барина. DU анализ нь үнэтэй: bonus() дээр 35 хос (2 нь биелэшгүй), kill-ийг гараар задлах, def-clear зам олох, биелэшгүй хосыг батлах шаардлагатай, тэгсэн ч тест 7 болсон (branch-д 4 хангалттай байсан). Хамгийн их цаг авсан алхам нь B хэсэг, тухайлбал bonus()-ийн DU хос бүрийн def-clear зам, kill, биелэшгүй хосыг шалгаж хүснэгтэлсэн ба CFG зурсан ажил байсан. Практикт branch хамралтыг суурь болгож, чухал урсгалд DU хос, мутацийн шалгалт, static analysis-ийг нэмэх нь зөв.
+

@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
  * Tests for DataFlowTargets.bonus. Line numbers refer to DataFlowTargets.java.
  * DU pair IDs (DU1..DU35) are defined in README.md.
  *
- * Phase 1: ALL-DEFS (AD1, AD2). Phase 2: ALL-DU-PAIRS (T3..T7 added).
+ * Phase 1: ALL-DEFS (AD1, AD2). Phase 2: ALL-DU-PAIRS (T3..T7 added; T8 added in Part C to kill mutant M2).
  */
 class BonusTest {
 
@@ -54,5 +54,11 @@ class BonusTest {
     @DisplayName("T7 {1,0,1}, thr 1 -> 5: DU30 best(43->53 F), DU34 score(51->56)")
     void t7_singleBreakThenOne() {
         assertEquals(5, DataFlowTargets.bonus(new int[] {1, 0, 1}, 1));
+    }
+
+    @Test
+    @DisplayName("T8 {1,0,1,1,1,1}, thr 1 -> 5: kills M2 (best = present); present > streak when best is updated")
+    void t8_streak4AfterBreakStaysBelow5() {
+        assertEquals(5, DataFlowTargets.bonus(new int[] {1, 0, 1, 1, 1, 1}, 1));
     }
 }
